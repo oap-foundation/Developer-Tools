@@ -1,0 +1,116 @@
+{
+    "name": "oap-vscode",
+    "displayName": "OAP VS Code Extension",
+    "description": "VS Code Extension for the Open Agent Protocol (OAP)",
+    "version": "0.0.1",
+    "publisher": "oap-foundation",
+    "icon": "icon.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/oap-foundation/oap-tools.git"
+    },
+    "keywords": [
+        "oap",
+        "agent",
+        "protocol",
+        "json-schema",
+        "wasm"
+    ],
+    "engines": {
+        "vscode": "^1.90.0"
+    },
+    "categories": [
+        "Other",
+        "Programming Languages",
+        "Snippets"
+    ],
+    "activationEvents": [
+        "onLanguage:json"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "oap.showWelcome",
+                "title": "OAP: Show Welcome Page"
+            },
+            {
+                "command": "oap.generateIdentity",
+                "title": "OAP: Generate New Identity"
+            },
+            {
+                "command": "oap.toggleLocalNet",
+                "title": "OAP: Toggle LocalNet (Start/Stop)"
+            },
+            {
+                "command": "oap.sendToRelay",
+                "title": "OAP: Send to LocalNet Relay"
+            },
+            {
+                "command": "oap.createAgentProject",
+                "title": "OAP: Create New Agent Project"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "oap.sendToRelay",
+                    "when": "resourceLangId == json",
+                    "group": "OAP"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "OAP Extension",
+            "properties": {
+                "oap.localNetPath": {
+                    "type": "string",
+                    "default": "../oap-localnet",
+                    "description": "Path to the OAP LocalNet directory containing docker-compose.yml"
+                },
+                "oap.relayUrl": {
+                    "type": "string",
+                    "default": "http://localhost:8000",
+                    "description": "URL of the OAP Relay for simulation"
+                }
+            }
+        },
+        "jsonValidation": [
+            {
+                "fileMatch": [
+                    "*.oacp.json"
+                ],
+                "url": "./schemas/oacp.schema.json"
+            },
+            {
+                "fileMatch": [
+                    "*.oapp.json"
+                ],
+                "url": "./schemas/oapp.schema.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "json",
+                "path": "./snippets/oap.code-snippets"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "package": "vsce package",
+        "test": "npm run compile && node ./out/test/runTest.js",
+        "lint": "eslint src --ext ts"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.90.0",
+        "@types/node": "20.x",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
+        "eslint": "^8.56.0",
+        "typescript": "^5.3.0",
+        "vsce": "^2.15.0"
+    }
+}

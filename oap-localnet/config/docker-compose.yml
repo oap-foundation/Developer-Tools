@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  relay1:
+    build: ../relay
+    hostname: relay1
+    environment:
+      - RELAY_ID=1
+    networks:
+      localnet:
+        aliases:
+          - relay1.local
+
+  relay2:
+    build: ../relay
+    hostname: relay2
+    environment:
+      - RELAY_ID=2
+    networks:
+      localnet:
+        aliases:
+          - relay2.local
+
+  relay3:
+    build: ../relay
+    hostname: relay3
+    environment:
+      - RELAY_ID=3
+    networks:
+      localnet:
+        aliases:
+          - relay3.local
+
+  discovery:
+    build: ../discovery
+    hostname: discovery
+    networks:
+      localnet:
+        aliases:
+          - discovery.local
+
+  ledger:
+    build: ../ledger
+    hostname: ledger
+    networks:
+      localnet:
+        aliases:
+          - ledger.local
+          - bank.local
+
+  dashboard:
+    build: ../dashboard
+    hostname: dashboard
+    ports:
+      - "3000:3000"
+    depends_on:
+      - relay1
+      - relay2
+      - relay3
+      - discovery
+      - ledger
+    networks:
+      localnet:
+        aliases:
+          - dashboard.local
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8443:8443"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - relay1
+      - relay2
+      - relay3
+      - discovery
+      - ledger
+    networks:
+      localnet:
+
+  seeder:
+    build: ../seeder
+    depends_on:
+      - relay1
+      - ledger
+    networks:
+      localnet:
+
+networks:
+  localnet:
+    driver: bridge

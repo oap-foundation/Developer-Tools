@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# OAP LocalNet CLI Wrapper
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="$SCRIPT_DIR/config/docker-compose.yml"
+
+function show_help {
+    echo "Usage: oap-localnet <command>"
+    echo ""
+    echo "Commands:"
+    echo "  start       Start the LocalNet stack (builds if necessary)"
+    echo "  stop        Stop the LocalNet stack"
+    echo "  reset       Stop and remove all data, then start fresh"
+    echo "  logs        Follow logs from all services"
+    echo "  status      Show running containers"
+    echo "  dashboard   Open the Dashboard in default browser"
+    echo "  help        Show this help message"
+}
+
+function start {
+    echo "Starting OAP LocalNet..."
+    docker compose -f "$CONFIG_FILE" up -d --build
+    echo "LocalNet is running!"
+    echo "Dashboard: http://localhost:3000"
+    echo "Relays:    https://localhost:8443 (via Nginx)"
+}
+
+function stop {
+    echo "Stopping OAP LocalNet..."
+    docker compose -f "$CONFIG_FILE" stop
+}
+
+function reset {
+    echo "Resetting OAP LocalNet (Clean Slate)..."
+    docker compose -f "$CONFIG_FILE" down -v --remove-orphans
+    echo "Starting fresh..."
+    start
+    # Wait a bit for seeder
+    sleep 5
+    echo "New Identities:"
+    docker logs config-seeder-1 2>/dev/null || echo "Seeder logs not available yet."
+}
+
+function logs {
+    docker compose -f "$CONFIG_FILE" logs -f
+}
+
+function status {
+    docker compose -f "$CONFIG_FILE" ps
+}
+
+function dashboard {
+    echo "Opening Dashboard..."
+    open "http://localhost:3000" 2>/dev/null || xdg-open "http://localhost:3000" 2>/dev/null || echo "Please open http://localhost:3000 manually"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reset)
+        reset
+        ;;
+    logs)
+        logs
+        ;;
+    status)
+        status
+        ;;
+    dashboard)
+        dashboard
+        ;;
+    *)
+        show_help
+        ;;
+esac

@@ -1,0 +1,58 @@
+{
+    "OACP Offer": {
+        "prefix": "oacp-offer",
+        "body": [
+            "{",
+            "  \"@context\": \"https://w3id.org/oacp/v1\",",
+            "  \"id\": \"${1:uuid}\",",
+            "  \"type\": \"Offer\",",
+            "  \"created\": \"${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}Z\",",
+            "  \"provider\": \"${2:did:key:...}\",",
+            "  \"details\": {",
+            "    \"price\": {",
+            "      \"amount\": ${3:100},",
+            "      \"currency\": \"${4:USD}\"",
+            "    }",
+            "  }",
+            "}"
+        ],
+        "description": "Create a basic OACP Offer"
+    },
+    "OACP Proposal": {
+        "prefix": "oacp-proposal",
+        "body": [
+            "{",
+            "  \"@context\": \"https://w3id.org/oacp/v1\",",
+            "  \"id\": \"${1:uuid}\",",
+            "  \"type\": \"CounterProposal\",",
+            "  \"created\": \"${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}Z\",",
+            "  \"consumer\": \"${2:did:key:...}\",",
+            "  \"provider\": \"${3:did:key:...}\",",
+            "  \"details\": {",
+            "    \"price\": {",
+            "      \"amount\": ${4:90},",
+            "      \"currency\": \"${5:USD}\"",
+            "    }",
+            "  }",
+            "}"
+        ],
+        "description": "Create a OACP Counter Proposal"
+    },
+    "OAPP Payment Request": {
+        "prefix": "oapp-payment",
+        "body": [
+            "{",
+            "  \"@context\": \"https://w3id.org/oapp/v1\",",
+            "  \"id\": \"${1:uuid}\",",
+            "  \"type\": \"PaymentRequest\",",
+            "  \"created\": \"${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}T${CURRENT_HOUR}:${CURRENT_MINUTE}:${CURRENT_SECOND}Z\",",
+            "  \"paymentDetails\": {",
+            "    \"total\": ${2:50.00},",
+            "    \"currency\": \"${3:EUR}\",",
+            "    \"recipient\": \"${4:IBAN_OR_DID}\"",
+            "  }",
+            "}"
+        ],
+        "description": "Create an OAPP Payment Request"
+    }
+}

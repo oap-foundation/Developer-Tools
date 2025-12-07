@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://w3id.org/oacp/v1",
+    "title": "OACP v1.0",
+    "description": "Open Agent Commercial Protocol - Object Definitions",
+    "type": "object",
+    "required": [
+        "@context",
+        "id",
+        "type",
+        "created"
+    ],
+    "properties": {
+        "@context": {
+            "type": "string",
+            "const": "https://w3id.org/oacp/v1"
+        },
+        "id": {
+            "type": "string",
+            "description": "Unique identifier for this object (DID or UUID URN)"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "Offer",
+                "CounterProposal",
+                "Acceptance",
+                "Reject",
+                "Agreement"
+            ]
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "expires": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "provider": {
+            "type": "string",
+            "description": "DID of the provider"
+        },
+        "consumer": {
+            "type": "string",
+            "description": "DID of the consumer"
+        },
+        "details": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "object",
+                    "properties": {
+                        "amount": {
+                            "type": "number"
+                        },
+                        "currency": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "amount",
+                        "currency"
+                    ]
+                }
+            }
+        }
+    }
+}

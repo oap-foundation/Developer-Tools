@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://w3id.org/oapp/v1",
+    "title": "OAPP v1.0",
+    "description": "Open Agent Payment Protocol - Object Definitions",
+    "type": "object",
+    "required": [
+        "@context",
+        "id",
+        "type",
+        "created"
+    ],
+    "properties": {
+        "@context": {
+            "type": "string",
+            "const": "https://w3id.org/oapp/v1"
+        },
+        "id": {
+            "type": "string",
+            "description": "Unique identifier for this payment object"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "PaymentRequest",
+                "PaymentProof",
+                "PaymentReceipt"
+            ]
+        },
+        "created": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "paymentDetails": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "number"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "recipient": {
+                    "type": "string",
+                    "description": "Payment address or DID"
+                }
+            },
+            "required": [
+                "total",
+                "currency",
+                "recipient"
+            ]
+        }
+    }
+}

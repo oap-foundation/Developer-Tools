@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAP LocalNet Dashboard</title>
+    <style>
+        body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: #252526; padding: 15px; border-radius: 5px; border: 1px solid #3c3c3c; }
+        .status { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .online { background: #4caf50; }
+        .offline { background: #f44336; }
+        h2 { margin-top: 0; color: #569cd6; }
+        .logs { height: 200px; overflow-y: auto; background: #000; padding: 10px; font-size: 12px; margin-top: 10px; }
+        button { background: #0e639c; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+        button:hover { background: #1177bb; }
+        input { background: #3c3c3c; border: 1px solid #555; color: white; padding: 5px; width: 60px; }
+    </style>
+</head>
+<body>
+    <h1>OAP LocalNet Dashboard</h1>
+    
+    <div class="grid" id="services">
+        <!-- Rendered by JS -->
+    </div>
+
+    <script>
+        async function fetchStatus() {
+            const res = await fetch('/api/status');
+            const status = await res.json();
+            return status;
+        }
+
+        async function fetchLogs() {
+            const res = await fetch('/api/logs');
+            const logs = await res.json();
+            return logs;
+        }
+
+        async function updateChaos(relay, failureRate, latency) {
+            await fetch(`/api/chaos/${relay}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    failure_rate: parseFloat(failureRate),
+                    latency_ms: parseInt(latency),
+                    corrupt_bytes: false
+                })
+            });
+            alert(`Chaos config updated for ${relay}`);
+        }
+
+        async function render() {
+            const [status, logs] = await Promise.all([fetchStatus(), fetchLogs()]);
+            const container = document.getElementById('services');
+            
+            // Allow inputs to persist focus by checking if already rendered
+            // Simple approach: re-render only logs/status indicators
+            
+            if (container.children.length === 0) {
+                 // Initial Render
+                 for (const [name, state] of Object.entries(status)) {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.id = `card-${name}`;
+                    
+                    let chaosControls = '';
+                    if (name.startsWith('relay')) {
+                        chaosControls = `
+                            <div style="margin-top: 10px; border-top: 1px solid #444; padding-top: 10px;">
+                                <strong>Chaos Control</strong><br>
+                                Failure Rate (0.0-1.0): <input type="number" id="fail-${name}" step="0.1" value="0.0"><br>
+                                Latency (ms): <input type="number" id="lat-${name}" value="0"><br>
+                                <button onclick="updateChaos('${name}', document.getElementById('fail-${name}').value, document.getElementById('lat-${name}').value)">Apply</button>
+                            </div>
+                        `;
+                    }
+
+                    card.innerHTML = `
+                        <h2><span class="status ${state}" id="stat-${name}"></span>${name}</h2>
+                        ${chaosControls}
+                        <div class="logs" id="logs-${name}"></div>
+                    `;
+                    container.appendChild(card);
+                 }
+            } else {
+                // Update existing
+                for (const [name, state] of Object.entries(status)) {
+                    const indic = document.getElementById(`stat-${name}`);
+                    if (indic) indic.className = `status ${state}`;
+                    
+                    const logDiv = document.getElementById(`logs-${name}`);
+                    if (logDiv && logs[name]) {
+                        logDiv.innerHTML = logs[name].reverse().join('<br>');
+                    }
+                }
+            }
+        }
+
+        setInterval(render, 2000);
+        render();
+    </script>
+</body>
+</html>
