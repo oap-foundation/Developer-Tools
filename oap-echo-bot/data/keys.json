@@ -1,0 +1,5 @@
+{
+    "did": "did:web:echo.oap.foundation",
+    "secret_key": "8d04bc02580d9ad66a7811d04b1358d4561a94ae6cd3223d6de1a4eba86cace07f86cc33cb82f9eae98b40a5246bfbabcd3936680ec83c89c8f162e5e2357bec",
+    "public_key": "7f86cc33cb82f9eae98b40a5246bfbabcd3936680ec83c89c8f162e5e2357bec"
+}

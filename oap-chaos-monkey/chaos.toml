@@ -1,0 +1,27 @@
+# OAP Chaos Monkey Configuration
+
+[server]
+port = 8080
+target_url = "https://httpbin.org" # Default target for testing
+
+[chaos]
+enabled = true
+latency_mode = "Jitter" # Options: "None", "Fixed", "Jitter"
+latency_fixed_ms = 500
+latency_min_ms = 100
+latency_max_ms = 1000
+failure_rate = 0.1 # 10% chance of failure
+failure_codes = [500, 503, 429]
+
+[sabotage]
+mode = "None" # Options: "None", "PacketLoss", "Corrupt", "Truncate"
+drop_rate = 0.0
+target_shard_indices = []
+
+[security]
+replay_enabled = false
+replay_delay_ms = 5000
+mitm_downgrade = false
+exhaustion_flood = false
+
+

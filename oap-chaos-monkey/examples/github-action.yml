@@ -1,0 +1,50 @@
+# OAP Chaos Monkey in GitHub Actions
+
+You can use the OAP Chaos Monkey as a Service Container in your CI workflow to test the resilience of your agents.
+
+## Example Workflow
+
+```yaml
+name: OAP Resilience Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      # Start the Chaos Monkey
+      chaos:
+        image: oap-foundation/chaos-monkey:latest
+        ports:
+          - 8080:8080
+        # Example: Test under "Subway" conditions
+        # Note: You need to mount your config or rely on default preset arg
+        options: --name chaos
+        # Overriding CMD to use preset mode
+        # Dockerfile CMD is ["./oap-chaos-monkey"]
+        # We want ["./oap-chaos-monkey", "--mode", "subway"]
+        # In GitHub Actions services, 'options' is for docker run args, not CMD.
+        # To override cmd, use 'cmd' or build custom image.
+        # Simpler: Just rely on default or mount config.
+        
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run Agent Tests via Chaos Proxy
+        env:
+          # Point your SDK to the Chaos Monkey
+          OAP_RELAY_URL: http://localhost:8080 
+        run: |
+          npm install
+          npm test
+```
+
+## Available Presets
+- `default`: Uses `chaos.toml`.
+- `subway`: High latency, medium packet loss.
+- `malicious-relay`: Corruption and Replay attacks.
+- `ddos`: High packet loss.
+
+## Building Locally
+`docker build -t oap-chaos-monkey .`

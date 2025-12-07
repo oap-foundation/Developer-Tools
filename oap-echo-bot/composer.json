@@ -1,0 +1,36 @@
+{
+    "name": "oap/echo-bot",
+    "description": "OAP Echo Bot (PHP Edition)",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "OAP Foundation",
+            "email": "dev@oap.foundation"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../Language Bindings/oaep-php"
+        },
+        {
+            "type": "path",
+            "url": "../../Language Bindings/oatp-php"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-sodium": "*",
+        "ext-json": "*",
+        "oap/oaep-php": "*",
+        "oap/oatp-php": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "OAP\\EchoBot\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
